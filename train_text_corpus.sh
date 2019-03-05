@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT_PATH=model/wikipedia-ja-w2v-model/word2vec.gensim.model
+OUTPUT_PATH=model/wikipedia-ja-d2v-model/doc2vec.gensim.model
 DIC_PATH=/usr/local/lib/mecab/dic/mecab-ipadic-neologd
 CORPUS_PATH=../../dataset/ArtistReviewCorpus_20180608
 SIZE=200

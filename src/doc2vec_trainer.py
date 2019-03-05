@@ -3,6 +3,7 @@ import functools
 from pathlib import Path
 import multiprocessing
 import tokenizer
+import logging
 
 
 def count_generator(iter):
@@ -26,8 +27,12 @@ def train_doc2vec_model(output_model_path, iter_docs, tagger, size, window, min_
     iter_tokens : iterator
         Iterator of documents, which are lists of words
     """
+    logging.info("get tokens iteractor")
+
     iter_tokens = get_tokens_iterator(tagger, iter_docs)
     n_obs = count_generator( iter_tokens() )
+
+    logging.info("build vocabulary")
 
     if use_pretrained_model:
         model = Doc2Vec.load(pretrained_model_path)
@@ -42,10 +47,17 @@ def train_doc2vec_model(output_model_path, iter_docs, tagger, size, window, min_
         )
         model.build_vocab( iter_tokens(), update=False )
 
+    logging.info("train doc2vec")
+
     model.train(iter_tokens(), total_examples=n_obs, epochs=model.iter)
     model.init_sims(replace=True)
+
+    logging.info("save model")
 
     p = Path(output_model_path)
     if not p.parent.exists():
         p.parent.mkdir()
     model.save(output_model_path)
+
+    logging.info("done.")
+    
