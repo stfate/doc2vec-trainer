@@ -2,23 +2,23 @@ from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 import functools
 from pathlib import Path
 import multiprocessing
-import tokenizer
 import logging
+logging.basicConfig(level=logging.INFO)
 
 
 def count_generator(iter):
     return sum(1 for _ in iter)
 
-def get_tokens_iterator(tagger, iter_docs):
-    tokenize = functools.partial(tokenizer.tokenize, tagger=tagger)
+# def get_tokens_iterator(tagger, iter_docs):
+#     tokenize = functools.partial(tokenizer.tokenize, tagger=tagger)
 
-    def iter_tokens():
-        for i,doc in enumerate( iter_docs() ):
-            yield TaggedDocument(tokenize(doc["body"]), [i])
+#     def iter_tokens():
+#         for i,doc in enumerate( iter_docs() ):
+#             yield TaggedDocument(tokenize(doc["body"]), [i])
 
-    return iter_tokens
+#     return iter_tokens
 
-def train_doc2vec_model(output_model_path, iter_docs, tagger, size, window, min_count, dm, use_pretrained_model=False, pretrained_model_path=None):
+def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, min_count, dm, use_pretrained_model=False, pretrained_model_path=None):
     """
     Parameters
     ----------
@@ -29,8 +29,8 @@ def train_doc2vec_model(output_model_path, iter_docs, tagger, size, window, min_
     """
     logging.info("get tokens iteractor")
 
-    iter_tokens = get_tokens_iterator(tagger, iter_docs)
-    n_obs = count_generator( iter_tokens() )
+    iter_tokens = tokenizer.get_tokens_iterator(iter_docs)
+    n_obs = count_generator(iter_tokens())
 
     logging.info("build vocabulary")
 

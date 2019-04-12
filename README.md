@@ -35,10 +35,10 @@ python src/train_wikipedia.py --download-wikipedia-dump --download-neologd --bui
 python src/train_wikipedia.py --build-model --size=100 --window=8 --min-count=5 --dm=0
 ```
 
-## General corpus
+## General dataset
 
 ```bash
-python src/train_text_corpus.py --build-model --corpus-path=CORPUS_PATH --size=100 --window=8 --min-count=5 --dm=0
+python src/train_text_dataset.py --build-model --corpus-path=CORPUS_PATH --size=100 --window=8 --min-count=5 --dm=0
 ```
 
 # How to use model
