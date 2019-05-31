@@ -1,5 +1,6 @@
 import argparse
 from functools import partial
+
 import dictionary_downloader
 import document_tokenizer
 import text_dataset
@@ -15,8 +16,9 @@ def get_options():
     parser.add_argument("--window", type=int, default=8)
     parser.add_argument("--min-count", type=int, default=10)
     parser.add_argument("--dm", type=int, default=1)
+    parser.add_argument("--epoch", type=int, default=5)
 
-    parser.add_argument("--corpus-path", default="data/TextCorpus")
+    parser.add_argument("--dataset-path", default="data/TextDataset")
     parser.add_argument("--lang", default="ja")
 
     parser.add_argument("--download-neologd", action="store_true", default=False)
@@ -27,6 +29,7 @@ def get_options():
 
     args = parser.parse_args()
     return vars(args)
+
 
 if __name__ == "__main__":
     options = get_options()
@@ -48,6 +51,7 @@ if __name__ == "__main__":
     window = options["window"]
     min_count = options["min_count"]
     dm = options["dm"]
+    epoch = options["epoch"]
     dataset_path = options["dataset_path"]
     use_pretrained_model = options["use_pretrained_model"]
     pretrained_model_path = options["pretrained_model_path"]
@@ -59,4 +63,4 @@ if __name__ == "__main__":
             tokenizer = document_tokenizer.MecabDocumentTokenizer(dic_path)
         elif lang == "en":
             tokenizer = document_tokenizer.NltkDocumentTokenizer()
-        doc2vec_trainer.train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, min_count, dm, use_pretrained_model, pretrained_model_path)
+        doc2vec_trainer.train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, min_count, dm, epoch, use_pretrained_model, pretrained_model_path)

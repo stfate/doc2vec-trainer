@@ -8,8 +8,9 @@ SIZE=400
 WINDOW=8
 MIN_COUNT=1
 DM=0
+EPOCH=5
 
 # download mecab-ipadic-neologd
 # python src/train_text_dataset.py --download-neologd --dictionary-path=$DIC_PATH
 
-python src/train_text_dataset.py --build-model -o $OUTPUT_PATH --dictionary-path=$DIC_PATH --dataset-path=$DATASET_PATH --lang=$LANG --size=$SIZE --window=$WINDOW --min-count=$MIN_COUNT --DM-$DM
+python src/train_text_dataset.py --build-model -o $OUTPUT_PATH --dictionary-path=$DIC_PATH --dataset-path=$DATASET_PATH --lang=$LANG --size=$SIZE --window=$WINDOW --min-count=$MIN_COUNT --dm=$DM --epoch=$EPOCH

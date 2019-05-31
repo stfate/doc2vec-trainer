@@ -1,13 +1,17 @@
-from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 import functools
 from pathlib import Path
 import multiprocessing
 import logging
+
+from gensim.models.doc2vec import TaggedDocument, Doc2Vec
+
+
 logging.basicConfig(level=logging.INFO)
 
 
 def count_generator(iter):
     return sum(1 for _ in iter)
+
 
 # def get_tokens_iterator(tagger, iter_docs):
 #     tokenize = functools.partial(tokenizer.tokenize, tagger=tagger)
@@ -18,7 +22,8 @@ def count_generator(iter):
 
 #     return iter_tokens
 
-def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, min_count, dm, use_pretrained_model=False, pretrained_model_path=None):
+
+def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size=400, window=8, min_count=5, dm=1, epoch=5, use_pretrained_model=False, pretrained_model_path=None):
     """
     Parameters
     ----------
@@ -49,7 +54,7 @@ def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, m
 
     logging.info("train doc2vec")
 
-    model.train(iter_tokens(), total_examples=n_obs, epochs=model.iter)
+    model.train(iter_tokens(), total_examples=n_obs, epochs=epoch)
     model.init_sims(replace=True)
 
     logging.info("save model")
@@ -60,4 +65,3 @@ def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, m
     model.save(output_model_path)
 
     logging.info("done.")
-    

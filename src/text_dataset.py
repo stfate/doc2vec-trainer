@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 import bz2
 from pathlib import Path
@@ -8,14 +7,17 @@ import os
 import re
 import subprocess
 import sys
+
 import nltk
-import lucia.textio as textio
+
+import ymh_nlp.textio as textio
 
 
 class TextDatasetBase(ABC):
     @abstractmethod
     def iter_docs(self):
         yield None
+
 
 class ArtistReviewDataset(TextDatasetBase):
     def __init__(self):
@@ -31,6 +33,7 @@ class ArtistReviewDataset(TextDatasetBase):
             reader = textio.TextReader(fn)
             lines = reader.read()
             yield {"title": title, "body": lines}
+
 
 class WikipediaDataset(TextDatasetBase):
     def __init__(self):
@@ -89,6 +92,7 @@ class WikipediaDataset(TextDatasetBase):
     def download_dump(self, file_path, url):
         cmd = ["curl", "-o", file_path, url]
         subprocess.call(cmd, stdout=sys.stdout)
+
 
 class MARDDataset(TextDatasetBase):
     def __init__(self):
