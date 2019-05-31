@@ -6,7 +6,7 @@ import MeCab
 from gensim.models.doc2vec import TaggedDocument
 import nltk
 
-import ymh_nlp.morphological as morpho
+import lucia.morphological as morpho
 
 
 ptn_number = re.compile(r"([0-9]|[０-９])+")
