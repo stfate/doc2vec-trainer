@@ -34,7 +34,7 @@ def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size=400, windo
     """
     logging.info("get tokens iteractor")
 
-    iter_tokens = tokenizer.get_tokens_iterator(iter_docs)
+    iter_tokens = tokenizer.get_tokens_iterator(iter_docs, normalize=False)
     n_obs = count_generator(iter_tokens())
 
     logging.info("build vocabulary")
