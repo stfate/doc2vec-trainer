@@ -23,27 +23,23 @@ pip install -r requirements.txt
 
 ## Wikipedia
 
-WikipediaダンプファイルのDL & NEologd辞書ファイルDL & モデル学習 を行う．
-
-```bash
-python src/train_wikipedia.py --download-wikipedia-dump --download-neologd --build-model
-```
-
 モデルのハイパーパラメータを指定する．
 
 ```bash
-python src/train_wikipedia.py --build-model --size=100 --window=8 --min-count=5 --dm=0
+python train_wikipedia.py -o $OUTPUT_PATH --dictionary-path=$DIC_PATH --wikipedia-dump-path=$WIKIPEDIA_DUMP_PATH --size=100 --window=8 --min-count=5 --dm=0
 ```
+
+詳細は`train_wikipedia.sh`を参照されたい．
 
 ## General dataset
 
 ```bash
-python src/train_text_dataset.py --build-model --corpus-path=CORPUS_PATH --size=100 --window=8 --min-count=5 --dm=0
+python train_text_dataset.py -o $OUTPUT_PATH --dictionary-path=$DIC_PATH --corpus-path=$CORPUS_PATH --size=100 --window=8 --min-count=5 --dm=0
 ```
 
 # How to use model
 
 ```python
-model_path = "model/word2vec.gensim.model"
-model = Word2Vec.load(model_path)
+model_path = "model/doc2vec.gensim.model"
+model = Doc2Vec.load(model_path)
 ```
