@@ -3,7 +3,6 @@ import copy
 import re
 import functools
 import MeCab
-from gensim.models.doc2vec import TaggedDocument
 
 import lucia.tokenizer as tokenizer
 
@@ -48,21 +47,6 @@ class DocumentTokenizerBase(ABC):
         """
         pass
 
-    @abstractmethod
-    def get_tokens_iterator(self, iter_docs):
-        """
-        get iterator of tokens
-        
-        Parameters
-        ----------
-        iter_docs: iterables
-            an iterator of documents, which are lists of words
-        
-        Returns
-        -------
-        """
-        pass
-
 
 class MecabDocumentTokenizer(DocumentTokenizerBase):
     def __init__(self, dic_path):
@@ -98,28 +82,6 @@ class MecabDocumentTokenizer(DocumentTokenizerBase):
 
         return tokens
 
-    def get_tokens_iterator(self, iter_docs, normalize=False):
-        """
-        get an iterator of tokens
-        
-        Parameters
-        ----------
-        iter_docs: iterable
-            an iterator of documents, which are lists of words
-        
-        Returns
-        -------
-        iter_tokens: iterable
-            an iterator of tokens
-        """
-        tokenize = functools.partial(self.tokenize, normalize=normalize)
-
-        def iter_tokens():
-            for i,doc in enumerate(iter_docs()):
-                yield TaggedDocument(tokenize(doc["body"]), [i])
-
-        return iter_tokens
-
 
 class NltkDocumentTokenizer(DocumentTokenizerBase):
     def __init__(self):
@@ -144,25 +106,3 @@ class NltkDocumentTokenizer(DocumentTokenizerBase):
         tokens,pos_tags = self.tagger.tokenize(text, normalize=normalize)
         tokens = concat_adjacent_numbers(tokens)
         return tokens
-
-    def get_tokens_iterator(self, iter_docs, normalize=False):
-        """
-        get an iterator of tokens
-        
-        Parameters
-        ----------
-        iter_docs: iterable
-            an iterator of documents, which are lists of words
-        
-        Returns
-        -------
-        iter_tokens: iterable
-            an iterator of tokens
-        """
-        tokenize = functools.partial(self.tokenize, normalize=normalize)
-
-        def iter_tokens():
-            for i,doc in enumerate(iter_docs()):
-                yield TaggedDocument(tokenize(doc["body"]), [i])
-
-        return iter_tokens

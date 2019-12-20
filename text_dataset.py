@@ -7,7 +7,7 @@ import os
 import re
 import subprocess
 import sys
-import nltk
+from gensim.models.doc2vec import TaggedDocument
 
 import lucia.textio as textio
 import lucia.tokenizer as tokenizer
@@ -38,6 +38,9 @@ class JapaneseText8Dataset(TextDatasetBase):
     Attributes
     ----------
     """
+    def __init__(self, word_tokenizer):
+        self.word_tokenizer = word_tokenizer
+
     def iter_docs(self, dataset_path):
         """
         get iterator of texts in one document
@@ -53,15 +56,16 @@ class JapaneseText8Dataset(TextDatasetBase):
             sentences = sentence_tokenizer.tokenize(text)
             for i,sentence in enumerate(sentences):
                 sentence = sentence.replace(" ", "")
-                yield {"title": i, "body": sentence}
+                yield TaggedDocument(self.word_tokenizer.tokenize(sentence), [i])
 
 
 class WikipediaDataset(TextDatasetBase):
-    def __init__(self):
+    def __init__(self, word_tokenizer):
         self.__src_dir = os.path.dirname( os.path.abspath(__file__) )
         self.__wikiextractor_path = os.path.normpath("wikiextractor/WikiExtractor.py")
         self.__wikiextractor_cmd = os.path.join(self.__src_dir, self.__wikiextractor_path)
         self.__wikiextractor_cmd = os.path.normpath(self.__wikiextractor_cmd)
+        self.word_tokenizer = word_tokenizer
 
     def iter_docs(self, file_path, dir_path):
         """
@@ -83,7 +87,9 @@ class WikipediaDataset(TextDatasetBase):
         re_doc_end = re.compile(r"^</doc>$")
         re_nonstandard_namespace = re.compile(r".*:.*")
         for fpath in extracted_file_paths:
-            with bz2.BZ2File(fpath) as f:
+            # with bz2.BZ2File(fpath) as f:
+            f = bz2.BZ2File(fpath)
+            try:
                 is_inside_doc = False
                 does_skip_this_doc = False
                 lines = []
@@ -101,18 +107,21 @@ class WikipediaDataset(TextDatasetBase):
                         m = re_doc_end.match(line)
                         if m is not None:
                             if not does_skip_this_doc:
-                                yield {"title": title, "body": "\n".join(lines)}
+                                yield TaggedDocument(self.word_tokenizer.tokenize("\n".join(lines)), [0])
                             is_inside_doc = False
                             does_skip_this_doc = False
                             lines = []
                             continue
                         if len(line) > 0:
                             lines.append(line)
+            finally:
+                f.close()
 
 
 class ArtistReviewDataset(TextDatasetBase):
-    def __init__(self):
+    def __init__(self, word_tokenizer):
         self.root_path = None
+        self.word_tokenizer = word_tokenizer
 
     def iter_docs(self, dataset_path):
         """
@@ -131,12 +140,13 @@ class ArtistReviewDataset(TextDatasetBase):
             title = meta[fid]
             reader = textio.TextReader(fn)
             lines = reader.read()
-            yield {"title": title, "body": lines}
+            yield TaggedDocument(self.word_tokenizer.tokenize(lines), [0])
 
 
 class MARDDataset(TextDatasetBase):
-    def __init__(self):
+    def __init__(self, word_tokenizer):
         self.root_path = None
+        self.word_tokenizer = word_tokenizer
 
     def iter_docs(self, dataset_path):
         """
@@ -154,4 +164,4 @@ class MARDDataset(TextDatasetBase):
                 review_dict = json.loads(line, encoding="utf-8")
                 title = review_dict["reviewerID"]
                 text = review_dict["reviewText"]
-                yield {"title": title, "body": text}
+                yield TaggedDocument(self.word_tokenizer.tokenize(text), [0])

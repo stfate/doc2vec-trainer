@@ -37,12 +37,14 @@ if __name__ == "__main__":
     dataset_path = options["dataset_path"]
     dic_path = options["dictionary_path"]
     lang = options["lang"]
-    dataset = text_dataset.MARDDataset()
-    # dataset = text_dataset.JapaneseText8Dataset()
-    
-    iter_docs = partial(dataset.iter_docs, dataset_path)
+
     if lang == "ja":
         tokenizer = document_tokenizer.MecabDocumentTokenizer(dic_path)
     elif lang == "en":
         tokenizer = document_tokenizer.NltkDocumentTokenizer()
-    doc2vec_trainer.train_doc2vec_model(output_model_path, iter_docs, tokenizer, size, window, min_count, dm, epoch)
+    dataset = text_dataset.MARDDataset(tokenizer)
+    # dataset = text_dataset.JapaneseText8Dataset()
+    
+    iter_docs = partial(dataset.iter_docs, dataset_path)
+    
+    doc2vec_trainer.train_doc2vec_model(output_model_path, iter_docs, size, window, min_count, dm, epoch)
