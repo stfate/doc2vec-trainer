@@ -5,11 +5,12 @@ doc2vec-trainer
 
 gensim doc2vecモデルの学習を行うツールキット．
 
+
 # Requirements
 
-- cURL
-- MeCab == 0.996
-- Python >= 3.6
+doc2vecはgensimの実装を使用．  
+他の依存パッケージは`requirements.txt`を参照．
+
 
 # Setup
 
@@ -21,13 +22,12 @@ pip install -r requirements.txt
 
 # Run
 
-詳細は`train_wikipedia.sh`を参照されたい．
-
 ## General dataset
 
 ```bash
 python train_text_dataset.py -o $OUTPUT_PATH --dictionary-path=$DIC_PATH --corpus-path=$CORPUS_PATH --size=100 --window=8 --min-count=5 --dm=0
 ```
+
 
 # How to use model
 
