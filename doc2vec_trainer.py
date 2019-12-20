@@ -3,9 +3,9 @@ from pathlib import Path
 import multiprocessing
 import logging
 import more_itertools
-from gensim.models.doc2vec import TaggedDocument, Doc2Vec
+from gensim.models.doc2vec import Doc2Vec
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s:%(message)s", datefmt="%Y/%m/%d %H:%M:%S")
 
 
 def train_doc2vec_model(output_model_path, iter_docs, tokenizer, size=400, window=8, min_count=5, dm=1, epoch=5):
